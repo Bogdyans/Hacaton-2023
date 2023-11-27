@@ -31,5 +31,11 @@ public class Answer {
         this.question = question;
         this.content = content;
     }
+    public Answer(Integer answerScore, String content, Question question) {
+        this.isCorrect = isCorrect;
+        this.answerScore = answerScore;
+        this.question = question;
+        this.content = content;
+    }
 
 }

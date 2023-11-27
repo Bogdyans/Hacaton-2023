@@ -51,4 +51,14 @@ public class TestController {
         model.addAttribute("groups", questionGroupService.getAll());
         return "testInfo";
     }
+
+    @PostMapping("/test/{tid}/add-question")
+    public String addQuestion(@PathVariable("tid") int tid, String questionId, Model model){
+        Test test = testService.findById(tid);
+        test.getQuestions().add(questionService.findById(Integer.parseInt(questionId)));
+        testService.save(test);
+        model.addAttribute("test",test);
+        model.addAttribute("groups", questionGroupService.getAll());
+        return "testInfo";
+    }
 }

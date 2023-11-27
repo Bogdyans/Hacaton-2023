@@ -1,6 +1,7 @@
 package com.bogdyan.fullstackbackend.controller;
 
 import com.bogdyan.fullstackbackend.model.Answer;
+import com.bogdyan.fullstackbackend.model.Question;
 import com.bogdyan.fullstackbackend.service.AnswerService;
 import com.bogdyan.fullstackbackend.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,11 @@ public class QuestionController {
     }
 
     @PostMapping("/{id}/add-answer")
-    public String addAnswer(@PathVariable("id") String id, String name, int score, Model model){
+    public String addAnswer(@PathVariable("id") int id, String content, int score, Model model){
+        Question question = questionService.findById(id);
+        Answer answer = new Answer(score, content, question);
+        answerService.save(answer);
+        model.addAttribute("question", question);
         return "QuestionInfo";
     }
 

@@ -160,7 +160,7 @@
                     <tbody>
                     <tr th:each="question : ${test.getQuestions()}">
                         <td>
-                            <span th:text="${question.getQuestionText()}"></span>
+                            <a th:href="@{'/question/'+${question.getQuestionId()}}"><span th:text="${question.getQuestionText()}"></span></a>
                         </td>
                         <td>
                             <span th:text="${question.getAnswers().size()}"></span>
@@ -176,9 +176,10 @@
             </li>
         </ul>
         <h2>Add new question:</h2>
-        <form class="add-form"  method="post">
-            <input  name="content" type="text" placeholder="Содержание" required>
-            <input  name="score" type="number" placeholder="Оценка" required>
+        <form class="add-form" th:action="@{'/test/' + ${test.getTestId()} + '/add-question'}"  method="post">
+            <select name="questionId">
+                <option th:each="questionn : ${test.getQuestionGroup().getQuestions()}" th:content="${questionn.getQuestionText().substring(1,5)} + '...'" th:value="${questionn.getQuestionId()}"></option>
+            </select>
             <button class="add-sub" type="submit">Добавить</button>
         </form>
     </div>

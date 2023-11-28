@@ -1,6 +1,7 @@
 package com.bogdyan.fullstackbackend.service;
 
 
+import com.bogdyan.fullstackbackend.model.Discipline;
 import com.bogdyan.fullstackbackend.model.QuestionGroup;
 import com.bogdyan.fullstackbackend.repository.QuestionGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,6 @@ public class QuestionGroupService {
     }
 
     public List<QuestionGroup> getAll(){
-        return questionGroupRepository.findAll();
+        return questionGroupRepository.findAllByOrderByQuestionGroupIdAsc();
     }
 }

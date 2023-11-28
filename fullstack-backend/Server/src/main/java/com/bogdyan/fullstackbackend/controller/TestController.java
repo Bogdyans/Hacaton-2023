@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.NoSuchElementException;
+
 @Controller
 public class TestController {
     private final TestService testService;
@@ -42,23 +44,20 @@ public class TestController {
         return "testInfo";
     }
 
-    @PostMapping("/test/{tid}/delete-question/{qid}")
+    @PostMapping("/{tid}/delete-question/{qid}")
     public String deleteQuestion(@PathVariable("tid") int tid, @PathVariable("qid") int qid, Model model){
-        Test test = testService.findById(tid);
-        test.getQuestions().remove(questionService.findById(qid));
-        testService.save(test);
-        model.addAttribute("test",test);
+        testService.deleteQuestionFromTest(tid, qid);
+        model.addAttribute("test", testService.findById(tid));
         model.addAttribute("groups", questionGroupService.getAll());
         return "testInfo";
     }
 
-    @PostMapping("/test/{tid}/add-question")
+    @PostMapping("/{tid}/add-question")
     public String addQuestion(@PathVariable("tid") int tid, String questionId, Model model){
-        Test test = testService.findById(tid);
-        test.getQuestions().add(questionService.findById(Integer.parseInt(questionId)));
-        testService.save(test);
-        model.addAttribute("test",test);
+        testService.addQuestionToTest(Integer.parseInt(questionId), tid);
+        model.addAttribute("test", testService.findById(tid));
         model.addAttribute("groups", questionGroupService.getAll());
         return "testInfo";
+
     }
 }

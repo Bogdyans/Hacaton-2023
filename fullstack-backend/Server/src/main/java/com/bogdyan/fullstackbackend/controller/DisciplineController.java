@@ -35,4 +35,24 @@ public class DisciplineController {
         model.addAttribute(disciplineService.findByName(nameOfDiscipline));
         return "disciplineInfo";
     }
+
+    @PostMapping("/discipline/{did}/changeName")
+    public String changeName(@PathVariable("did") int did, String newName, Model model){
+        disciplineService.changeDisciplineName(did, newName);
+        model.addAttribute(disciplineService.findById(did));
+        return "disciplineInfo";
+    }
+
+    @PostMapping("/discipline/{did}/delete-questionbank/{qbid}")
+    public String deleteAnswer(@PathVariable("did") int did, @PathVariable("qbid") int qbid, Model model){
+        disciplineService.deleteQuestionBankFromDiscipline(qbid, did);
+        model.addAttribute(disciplineService.findById(did));
+        return "disciplineInfo";
+    }
+    @PostMapping("/discipline/{did}/add-questionbank")
+    public String deleteAnswer(@PathVariable("did") int did, String qbName, Model model){
+        disciplineService.createAndAddNewQBtoDiscipline(did, qbName);
+        model.addAttribute(disciplineService.findById(did));
+        return "disciplineInfo";
+    }
 }

@@ -22,13 +22,16 @@ public class UGroup {
 
     @ManyToMany(mappedBy="uGroups")
     @JsonBackReference
+    @OrderBy("username ASC")
     private Set<User> users = new HashSet<>();
 
     @ManyToMany(mappedBy = "uGroups")
+    @OrderBy("testId ASC")
     private Set<Test> tests = new HashSet<>();
 
     @ManyToMany(mappedBy="uGroups")
     @JsonBackReference
+    @OrderBy("disciplineName ASC")
     private Set<Discipline> disciplines = new HashSet<>();
 
     public UGroup(String uGroupName) {

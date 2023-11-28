@@ -28,9 +28,11 @@ public class QuestionBank {
 
 
     @OneToMany(mappedBy = "questionBank", cascade = CascadeType.ALL)
+    @OrderBy("questionId ASC")
     private Set<Question> questions = new HashSet<>();
 
     @OneToMany(mappedBy = "questionBank", cascade = CascadeType.ALL)
+    @OrderBy("questionGroupId ASC")
     private Set<QuestionGroup> questionGroups = new HashSet<>();
 
     public QuestionBank() {

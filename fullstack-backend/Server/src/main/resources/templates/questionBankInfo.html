@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Информация о дисциплине</title>
+    <title th:text="QuestionBank + ${questionbank.getQuestionBankId()}"></title>
     <meta charset="utf-8">
     <style>
         .header {
@@ -44,7 +44,6 @@
             background-color: #f2f2f2; /* Светло-серый цвет фона блока с информацией */
             padding: 20px;
             border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Тень блока */
             max-width: 800px; /* Максимальная ширина блока */
             width: 100%; /* Ширина блока на всю доступную ширину */
         }
@@ -108,6 +107,14 @@
             border-radius: 4px;
             cursor: pointer;
         }
+        input[type="submit"] {
+            padding: 5px 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
         .add-form {
             margin-bottom: 20px;
         }
@@ -133,18 +140,49 @@
 
 <header th:insert="parts/header :: header"></header>
 <main>
-    <h1>Test info</h1>
-    <div class="question-info" th:if="${test}">
-        <h2>Name: <span th:text="${test.getTestName()}"></span></h2>
-        <div class="inline">
-            <h2>In Group:<span th:text="${test.getQuestionGroup().getQuestionGroupName()}"></span></h2>
-        <form th:action="@{'/' + ${test.getTestId()} + '/change-question-group'}" method="post">
-            <select  name="group">
-                <option th:each="group : ${groups}" th:value="${group.getQuestionGroupId()}"><span th:text="${group.getQuestionGroupName()}"></span></option>
-            </select>
-            <input type="submit" content="Save">
+    <h1>QuestionBank info</h1>
+    <div class="question-info" th:if="${questionbank}">
+        <h2>Name: <span th:text="${questionbank.getQuestionBankName()}"></span></h2>
+        <form th:action="@{'/questionBank/'+${questionbank.getQuestionBankId()}+'/changeName'}" method="post">
+            <div class="inline"><input type="text" name="newName"><span>  </span><input type="submit"></div>
         </form>
-        </div>
+        <h2>QuestionGroups:</h2>
+        <ul>
+            <li >
+                <table>
+                    <thead>
+                    <tr>
+                        <th>QuestionGroup Name</th>
+                        <th>Number of Questions</th>
+                        <th>Number of Tests</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="questiongroup : ${questionbank.getQuestionGroups()}">
+                        <td>
+                            <a th:href="@{'/questionGroup/'+${questiongroup.getQuestionGroupId()}}"><span th:text="${questiongroup.getQuestionGroupName()}"></span></a>
+                        </td>
+                        <td>
+                            <span th:text="${questiongroup.getQuestions().size()}"></span>
+                        </td>
+                        <td>
+                            <span th:text="${questiongroup.getTests().size()}"></span>
+                        </td>
+                        <td><form th:action="@{'/questionBank/' + ${questionbank.getQuestionBankId()} + '/delete-question-group/' + ${questiongroup.getQuestionGroupId()}}" method="post">
+                            <button type="submit">Delete</button>
+                        </form></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </li>
+        </ul>
+        <h3>Add new QuestionGroup:</h3>
+        <form class="add-form" th:action="@{'/questionBank/' + ${questionbank.getQuestionBankId()} + '/add-question-group'}" method="post">
+            <input  name="name" type="text" placeholder="Name" required>
+            <button class="add-sub" type="submit">Add</button>
+        </form>
+
 
         <h2>Questions:</h2>
         <ul>
@@ -152,39 +190,37 @@
                 <table>
                     <thead>
                     <tr>
-                        <th>Question</th>
-                        <th>Num of Answers</th>
+                        <th>Question content</th>
+                        <th>Number of Answers</th>
                         <th>Delete</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="question : ${test.getQuestions()}">
+                    <tr th:each="question : ${questionbank.getQuestions()}">
                         <td>
                             <a th:href="@{'/question/'+${question.getQuestionId()}}"><span th:text="${question.getQuestionText()}"></span></a>
                         </td>
                         <td>
                             <span th:text="${question.getAnswers().size()}"></span>
                         </td>
-                        <td>
-                            <form th:action="@{'/' + ${test.getTestId()} +'/delete-question/' + ${question.getQuestionId()}}"  method="post">
-                                <button type="submit">Delete</button>
-                            </form>
+                        <td><form th:action="@{'/questionBank/' + ${questionbank.getQuestionBankId()} + '/delete-question/' + ${question.getQuestionId()}}" method="post">
+                            <button type="submit">Delete</button>
+                        </form>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </li>
         </ul>
-        <h2>Add new question:</h2>
-        <form class="add-form" th:action="@{'/' + ${test.getTestId()} + '/add-question'}"  method="post">
-            <select name="questionId">
-                <option th:each="questionn : ${test.getQuestionGroup().getQuestions()}"  th:value="${questionn.getQuestionId()}"><span th:text="${questionn.getQuestionText()} + '...'"></span></option>
-            </select>
-            <button class="add-sub" type="submit">Добавить</button>
+        <h3>Add new Question:</h3>
+        <form class="add-form" th:action="@{'/questionBank/' + ${questionbank.getQuestionBankId()} + '/add-question'}" method="post">
+            <input  name="content" type="text" placeholder="Content" required>
+            <button class="add-sub" type="submit">Add</button>
         </form>
+
     </div>
-    <div th:unless="${test}">
-        <p>Test not found.</p>
+    <div th:unless="${questionbank}">
+        <p>Discipline not found.</p>
     </div>
 </main>
 </body>

@@ -1,5 +1,6 @@
 package com.bogdyan.fullstackbackend.service;
 
+import com.bogdyan.fullstackbackend.model.Discipline;
 import com.bogdyan.fullstackbackend.model.Role;
 import com.bogdyan.fullstackbackend.model.User;
 import com.bogdyan.fullstackbackend.repository.UserRepository;
@@ -12,6 +13,7 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
 
+    @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -35,7 +37,7 @@ public class UserService {
     }
 
     public List<User> getAll(){
-        return userRepository.findAll();
+        return userRepository.findAllByOrderByUserIdAsc();
     }
 }
 

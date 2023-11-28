@@ -1,97 +1,74 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Информация о дисциплине</title>
-    <meta charset="utf-8">
-    <style>
-        .header {
-            height: 80px;
-            background-color: #3498db;
-            width: 100%;
-        }
-        .header ul {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            margin: 0;
-            list-style-type: none;
-        }
-        .header ul li {
-            background-color: #eee;
-            margin: 2px;
-            padding: 4px;
-            border-radius: 4px;
-        }
-        .header ul li:hover {
-            background-color: #ddd;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #ffffff; /* Белый цвет фона для страницы */
-            color: #333333; /* Цвет текста */
-            margin: 0;
-            height: 100vh; /* Высота страницы */
-        }
-        main {
-            padding: 20px;
-        }
-        h1 {
-            color: #3498db; /* Синий цвет для заголовка */
-        }
+<style  th:insert="parts/styles :: styles">
+</style>
+<style>
 
-        .discipline-info {
-            background-color: #f2f2f2; /* Светло-серый цвет фона блока с информацией */
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Тень блока */
-            max-width: 600px; /* Максимальная ширина блока */
-            width: 100%; /* Ширина блока на всю доступную ширину */
-        }
+    .header {
+        height: 80px;
+        background-color: #3498db;
+        width: 100%;
+    }
+    .header ul {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin: 0;
+        list-style-type: none;
 
-        .discipline-info p {
-            margin-bottom: 10px;
-        }
-
-        ul {
-            padding-left: 20px;
-        }
-
-        li {
-            list-style-type: disc;
-            margin-left: 5px;
-        }
-    </style>
-</head>
+    }
+</style>
 
 <body>
-<header th:insert="parts/header :: header"></header>
-<main>
-<h1>Информация о дисциплине</h1>
-<div class="discipline-info" th:if="${discipline}">
-    <h2>Название дисциплины: <span th:text="${discipline.disciplineName}"></span></h2>
-    <h2>Список групп:</h2>
-    <ul>
-        <li th:each="group : ${discipline.getUGroups()}" th:text="${group.getUGroupName()}"><a  th:href="@{/groups/__${group.getUGroupName()}__}"></a > more...</a></li>
-    </ul>
 
-    <h2>Вопросы по дисциплине:</h2>
-    <ul>
-        <h3>QuestionBanks</h3>
-        <li th:each="questionBank : ${discipline.getQuestionBanks()}">
-            <h4 th:text="${questionBank.getQuestionBankName()}"></h4>
-            <h4>Questions</h4>
-            <ul>
-                <li th:each="question : ${questionBank.getQuestions()}">
-                    <a th:href="@{/question/__${question.getQuestionId()}__}"><h4 th:text="${question.getQuestionText()}"></h4></a>
-                    <h4>Number of answers: <span th:text="${question.getAnswers().size()}"></span></h4>
-                </li>
-            </ul>>
-        </li>
-    </ul>
-</div>
-<div th:unless="${discipline}">
-    <p>Дисциплина не найдена.</p>
-</div>
+<header th:insert="parts/header :: header" class="header"></header>
+<main>
+    <h1>Discipline info</h1>
+    <div class="question-info" th:if="${discipline}">
+        <h2>Name: <span th:text="${discipline.getDisciplineName()}"></span></h2>
+        <form th:action="@{'/discipline/'+${discipline.getDisciplineId()}+'/changeName'}" method="post">
+            <div class="inline"><input type="text" name="newName" placeholder="New Name"><span>  </span><input type="submit"></div>
+        </form>
+        <h2>QuestionBanks:</h2>
+        <ul>
+            <li >
+                <table>
+                    <thead>
+                    <tr>
+                        <th>QB Name</th>
+                        <th>Number of Question Groups</th>
+                        <th>Number of Questions</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="questionBank : ${discipline.getQuestionBanks()}">
+                        <td>
+                            <a th:href="@{'/questionBank/'+${questionBank.getQuestionBankId()}}"><span th:text="${questionBank.getQuestionBankName()}"></span></a>
+                        </td>
+                        <td>
+                            <span th:text="${questionBank.getQuestionGroups().size()}"></span>
+                        </td>
+                        <td>
+                            <span th:text="${questionBank.getQuestions().size()}"></span>
+                        </td>
+                        <td><form th:action="@{'/discipline/' + ${discipline.getDisciplineId()} + '/delete-questionbank/' + ${questionBank.getQuestionBankId()}}" method="post">
+                            <button type="submit">Delete</button>
+                        </form></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </li>
+        </ul>
+        <h3>Add new QuestionBank:</h3>
+        <form class="add-form" th:action="@{'/discipline/' + ${discipline.getDisciplineId()} + '/add-questionbank'}" method="post">
+            <input  name="qbName" type="text" placeholder="Name" required>
+            <button class="add-sub" type="submit">Add</button>
+        </form>
+    </div>
+    <div th:unless="${discipline}">
+        <p>Discipline not found.</p>
+    </div>
 </main>
 </body>
 </html>

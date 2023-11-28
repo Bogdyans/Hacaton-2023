@@ -3,6 +3,7 @@ package com.bogdyan.fullstackbackend.service;
 import com.bogdyan.fullstackbackend.model.Role;
 import com.bogdyan.fullstackbackend.repository.RoleRepository;
 import com.bogdyan.fullstackbackend.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -11,6 +12,7 @@ import java.util.NoSuchElementException;
 public class RoleService {
     private final RoleRepository roleRepository;
 
+    @Autowired
     public RoleService(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
@@ -20,6 +22,8 @@ public class RoleService {
         return roleRepository.findById(roleId)
                 .orElseThrow(() -> new NoSuchElementException("Role not found"));
     }
+
+
 
 
 }

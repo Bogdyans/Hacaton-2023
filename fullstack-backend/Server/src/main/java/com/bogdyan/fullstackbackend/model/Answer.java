@@ -32,7 +32,7 @@ public class Answer {
         this.content = content;
     }
     public Answer(Integer answerScore, String content, Question question) {
-        this.isCorrect = isCorrect;
+        this.isCorrect = 0;
         this.answerScore = answerScore;
         this.question = question;
         this.content = content;

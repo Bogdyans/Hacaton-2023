@@ -41,6 +41,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "u_group_id")
     )
+    @OrderBy("uGroupId ASC")
     private Set<UGroup> uGroups = new HashSet<>();
 
     @ManyToMany
@@ -50,6 +51,7 @@ public class User {
             joinColumns=@JoinColumn(name="user_id"),
             inverseJoinColumns = @JoinColumn(name="test_id")
     )
+    @OrderBy("testId ASC")
     private Set<Test> tests = new HashSet<>();
 
     public User(){

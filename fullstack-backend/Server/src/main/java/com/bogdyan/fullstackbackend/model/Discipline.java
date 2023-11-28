@@ -26,9 +26,11 @@ public class Discipline {
             joinColumns = @JoinColumn(name="discipline_id"),
             inverseJoinColumns = @JoinColumn(name="u_group_id")
     )
+    @OrderBy("uGroupId ASC")
     private Set<UGroup> uGroups = new HashSet<>();
 
     @OneToMany(mappedBy = "discipline", cascade = CascadeType.ALL)
+    @OrderBy("questionBankId ASC")
     private Set<QuestionBank> questionBanks = new HashSet<>();
 
     public Discipline() {

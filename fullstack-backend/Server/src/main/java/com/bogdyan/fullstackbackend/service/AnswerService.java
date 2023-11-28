@@ -5,6 +5,7 @@ import com.bogdyan.fullstackbackend.repository.AnswerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -18,6 +19,9 @@ public class AnswerService {
 
     public Answer findById(int id){
         return answerRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Answer not found"));
+    }
+    public List<Answer> getAll(){
+        return answerRepository.findAllByOrderByAnswerIdAsc();
     }
 
     public void changeAnswer(int id, String text, String score){

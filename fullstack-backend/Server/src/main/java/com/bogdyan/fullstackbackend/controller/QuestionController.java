@@ -23,32 +23,39 @@ public class QuestionController {
         this.answerService = answerService;
     }
 
-    @GetMapping("/question/{id}")
-    public String listQuestionInfo(@PathVariable("id") Integer id, Model model){
-        model.addAttribute("question", questionService.findById(id));
+    @GetMapping("/question/{qid}")
+    public String listQuestionInfo(@PathVariable("qid") Integer qid, Model model){
+        model.addAttribute("question", questionService.findById(qid));
         return "QuestionInfo";
     }
 
-    @PostMapping("/{id}/change-answer/{answer-id}")
-    public String changeQuestionAnswer(@PathVariable("id") int id, @PathVariable("answer-id") int aid, String text, String score, Model model){
+    @PostMapping("/question/{qid}/change-answer/{aid}")
+    public String changeQuestionAnswer(@PathVariable("qid") int qid, @PathVariable("aid") int aid, String text, String score, Model model){
         answerService.changeAnswer(aid, text, score);
-        model.addAttribute("question", questionService.findById(id));
+        model.addAttribute("question", questionService.findById(qid));
         return "QuestionInfo";
     }
 
-    @PostMapping("/{id}/add-answer")
-    public String addAnswer(@PathVariable("id") int id, String content, int score, Model model){
-        Question question = questionService.findById(id);
-        Answer answer = new Answer(score, content, question);
-        answerService.save(answer);
-        model.addAttribute("question", question);
+    @PostMapping("/question/{qid}/add-answer")
+    public String addAnswer(@PathVariable("qid") int qid, String content, int score, Model model){
+        questionService.addAnswerToQuestion(content, score, qid);
+        model.addAttribute("question",  questionService.findById(qid));
         return "QuestionInfo";
     }
 
-    @PostMapping("/{qid}/delete-answer/{aid}")
+    @PostMapping("/question/{qid}/delete-answer/{aid}")
     public String deleteAnswer(@PathVariable("qid") int qid, @PathVariable("aid") int aid, Model model) {
         answerService.deleteAnswer(aid);
         model.addAttribute("question", questionService.findById(qid));
         return "QuestionInfo";
     }
+
+    @PostMapping("/question/{qid}/changeText")
+    public String changeText(@PathVariable("qid") int qid, String content, Model model){
+        questionService.changeQuestionContent(qid, content);
+        model.addAttribute("question", questionService.findById(qid));
+        return "QuestionInfo";
+    }
+
+
 }

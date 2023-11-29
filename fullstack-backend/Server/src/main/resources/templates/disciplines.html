@@ -89,7 +89,7 @@
       <h3 th:text="${discipline.getDisciplineName()}"></h3>
       <p>Num of connected groups: <span th:text="${discipline.getUGroups().size()}"></span></p>
       <p>Num of question banks: <span th:text="${discipline.getQuestionBanks().size()}"></span></p>
-      <a th:href="@{/disciplines/__${discipline.getDisciplineName()}__}"><p>more... </p></a>
+      <a th:href="@{/disciplines/__${discipline.getDisciplineId()}__}"><p>more... </p></a>
     </div>
   </div>
 

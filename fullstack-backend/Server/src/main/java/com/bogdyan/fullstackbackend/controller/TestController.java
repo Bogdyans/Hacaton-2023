@@ -33,7 +33,7 @@ public class TestController {
         return "testInfo";
     }
 
-    @PostMapping("/{tid}/change-question-group")
+    @PostMapping("/test/{tid}/change-question-group")
     public String changeGroup(@PathVariable("tid") int tid, int group, Model model){
         Test test = testService.findById(tid);
         test.setQuestionGroup(questionGroupService.findById(group));
@@ -44,15 +44,15 @@ public class TestController {
         return "testInfo";
     }
 
-    @PostMapping("/{tid}/delete-question/{qid}")
+    @PostMapping("/test/{tid}/delete-question/{qid}")
     public String deleteQuestion(@PathVariable("tid") int tid, @PathVariable("qid") int qid, Model model){
-        testService.deleteQuestionFromTest(tid, qid);
+        testService.deleteQuestionFromTest(qid, tid);
         model.addAttribute("test", testService.findById(tid));
         model.addAttribute("groups", questionGroupService.getAll());
         return "testInfo";
     }
 
-    @PostMapping("/{tid}/add-question")
+    @PostMapping("/test/{tid}/add-question")
     public String addQuestion(@PathVariable("tid") int tid, String questionId, Model model){
         testService.addQuestionToTest(Integer.parseInt(questionId), tid);
         model.addAttribute("test", testService.findById(tid));

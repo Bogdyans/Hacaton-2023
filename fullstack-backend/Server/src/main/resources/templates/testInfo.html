@@ -138,7 +138,7 @@
         <h2>Name: <span th:text="${test.getTestName()}"></span></h2>
         <div class="inline">
             <h2>In Group:<span th:text="${test.getQuestionGroup().getQuestionGroupName()}"></span></h2>
-        <form th:action="@{'/' + ${test.getTestId()} + '/change-question-group'}" method="post">
+        <form th:action="@{'/test/' + ${test.getTestId()} + '/change-question-group'}" method="post">
             <select  name="group">
                 <option th:each="group : ${groups}" th:value="${group.getQuestionGroupId()}"><span th:text="${group.getQuestionGroupName()}"></span></option>
             </select>
@@ -166,7 +166,7 @@
                             <span th:text="${question.getAnswers().size()}"></span>
                         </td>
                         <td>
-                            <form th:action="@{'/' + ${test.getTestId()} +'/delete-question/' + ${question.getQuestionId()}}"  method="post">
+                            <form th:action="@{'/test/' + ${test.getTestId()} +'/delete-question/' + ${question.getQuestionId()}}"  method="post">
                                 <button type="submit">Delete</button>
                             </form>
                         </td>
@@ -176,7 +176,7 @@
             </li>
         </ul>
         <h2>Add new question:</h2>
-        <form class="add-form" th:action="@{'/' + ${test.getTestId()} + '/add-question'}"  method="post">
+        <form class="add-form" th:action="@{'/test/' + ${test.getTestId()} + '/add-question'}"  method="post">
             <select name="questionId">
                 <option th:each="questionn : ${test.getQuestionGroup().getQuestions()}"  th:value="${questionn.getQuestionId()}"><span th:text="${questionn.getQuestionText()} + '...'"></span></option>
             </select>

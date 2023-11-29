@@ -50,14 +50,19 @@ public class DisciplineService {
 
 
     public void deleteQuestionBankFromDiscipline(int qbid, int did){
-        Discipline discipline = findById(did);
-        discipline.getQuestionBanks().remove(questionBankRepository.findById(qbid).orElseThrow(() -> new NoSuchElementException("QB not found")));
-        save(discipline);
+        questionBankRepository.delete(questionBankRepository.findById(qbid).orElseThrow(() -> new NoSuchElementException("QB not found")));
+
     }
 
     public void createAndAddNewQBtoDiscipline(int did, String qbName){
         Discipline discipline = findById(did);
         QuestionBank newQuestionBank = new QuestionBank(qbName, discipline);
         questionBankRepository.save(newQuestionBank);
-    }///////////////////
+    }
+    public QuestionBank createAndAddNewQBtoDisciplineWithReturn(int did, String qbName){
+        Discipline discipline = findById(did);
+        QuestionBank newQuestionBank = new QuestionBank(qbName, discipline);
+        questionBankRepository.save(newQuestionBank);
+        return newQuestionBank;
+    }
 }

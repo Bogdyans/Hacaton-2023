@@ -1,5 +1,6 @@
 package com.bogdyan.fullstackbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class Discipline {
     private String disciplineName;
 
     @ManyToMany
+    @JsonBackReference
     @JoinTable(
             name="ugroup_didciplines",
             joinColumns = @JoinColumn(name="discipline_id"),
@@ -30,6 +32,7 @@ public class Discipline {
     private Set<UGroup> uGroups = new HashSet<>();
 
     @OneToMany(mappedBy = "discipline", cascade = CascadeType.ALL)
+    @JsonBackReference
     @OrderBy("questionBankId ASC")
     private Set<QuestionBank> questionBanks = new HashSet<>();
 

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<style  th:insert="parts/styles :: styles">
+<style th:insert="parts/styles :: styles">
 </style>
 <style>
 
@@ -9,6 +9,7 @@
         background-color: #3498db;
         width: 100%;
     }
+
     .header ul {
         display: flex;
         flex-direction: row;
@@ -25,13 +26,42 @@
 <main>
     <h1>Discipline info</h1>
     <div class="question-info" th:if="${discipline}">
-        <h2>Name: <span th:text="${discipline.getDisciplineName()}"></span></h2>
-        <form th:action="@{'/discipline/'+${discipline.getDisciplineId()}+'/changeName'}" method="post">
-            <div class="inline"><input type="text" name="newName" placeholder="New Name"><span>  </span><input type="submit"></div>
+        <h2>Name: <span id="name" th:text="${discipline.getDisciplineName()}"></span></h2>
+        <form id="chngNameForm" th:action="@{'/discipline/'+${discipline.getDisciplineId()}+'/changeName'}" method="post">
+            <div class="inline"><input id="chngNameInput" type="text" name="newName" placeholder="New Name"><span>  </span><input
+                    type="submit"></div>
         </form>
+        <script>
+            let chngNameForm = document.getElementById('chngNameForm');
+            chngNameForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                let formData = new FormData(chngNameForm); // Получаем данные формы
+
+                fetch(chngNameForm.getAttribute('action'), {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Успешно изменено');
+                            let nameSpan = document.getElementById('name');
+                            let chngNameInput = document.getElementById('chngNameInput');
+                            nameSpan.innerText = chngNameInput.value;
+                            chngNameInput.value = '';
+                        } else {
+                            console.error('Ошибка изменения', response.statusText);
+
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Произошла ошибка при отправке запроса', error);
+                    });
+            });
+        </script>
         <h2>QuestionBanks:</h2>
         <ul>
-            <li >
+            <li>
                 <table>
                     <thead>
                     <tr>
@@ -41,10 +71,11 @@
                         <th>Delete</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="qbTbody">
                     <tr th:each="questionBank : ${discipline.getQuestionBanks()}">
                         <td>
-                            <a th:href="@{'/questionBank/'+${questionBank.getQuestionBankId()}}"><span th:text="${questionBank.getQuestionBankName()}"></span></a>
+                            <a th:href="@{'/questionBank/'+${questionBank.getQuestionBankId()}}"><span
+                                    th:text="${questionBank.getQuestionBankName()}"></span></a>
                         </td>
                         <td>
                             <span th:text="${questionBank.getQuestionGroups().size()}"></span>
@@ -52,19 +83,131 @@
                         <td>
                             <span th:text="${questionBank.getQuestions().size()}"></span>
                         </td>
-                        <td><form th:action="@{'/discipline/' + ${discipline.getDisciplineId()} + '/delete-questionbank/' + ${questionBank.getQuestionBankId()}}" method="post">
-                            <button type="submit">Delete</button>
-                        </form></td>
+                        <td>
+                            <form class="deleteForm"
+                                  th:action="@{'/discipline/' + ${discipline.getDisciplineId()} + '/delete-questionbank/' + ${questionBank.getQuestionBankId()}}"
+                                  method="post">
+                                <button type="submit">Delete</button>
+                            </form>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    let deleteForms = document.getElementsByClassName('deleteForm');
+
+
+                                    for (let deleteForm of deleteForms) {
+                                        deleteForm.addEventListener('submit', function (event) {
+                                            event.preventDefault();
+
+                                            let formData = new FormData(deleteForm); // Получаем данные формы
+
+                                            fetch(deleteForm.getAttribute('action'), {
+                                                method: 'POST',
+                                                body: formData
+                                            })
+                                                .then(response => {
+                                                    if (response.ok) {
+                                                        console.log('Успешно удалено');
+                                                        let trElement = deleteForm.parentElement.parentElement; // Получаем родительский tr
+                                                        trElement.remove();
+                                                    } else {
+                                                        console.error('Ошибка удаления', response.statusText);
+
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error('Произошла ошибка при отправке запроса', error);
+                                                });
+                                        });
+                                    }
+                                });
+                            </script>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
             </li>
         </ul>
         <h3>Add new QuestionBank:</h3>
-        <form class="add-form" th:action="@{'/discipline/' + ${discipline.getDisciplineId()} + '/add-questionbank'}" method="post">
-            <input  name="qbName" type="text" placeholder="Name" required>
+        <form class="add-form" th:action="@{'/discipline/' + ${discipline.getDisciplineId()} + '/add-questionbank'}"
+              method="post">
+            <input name="qbName" type="text" placeholder="Name" required>
             <button class="add-sub" type="submit">Add</button>
         </form>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                let addForm = document.getElementsByClassName('add-form')[0];
+
+
+                addForm.addEventListener('submit', function (event) {
+                    event.preventDefault();
+
+                    let formData = new FormData(addForm); // Получаем данные формы
+
+                    fetch(addForm.getAttribute('action'), {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+
+                            let tbody = document.getElementById("qbTbody");
+                            let row = tbody.insertRow();
+                            let nameCell = row.insertCell(0);
+                            let qGCell = row.insertCell(1);
+                            let qCell = row.insertCell(2);
+                            let delBtnCell = row.insertCell(3);
+
+                            let a = document.createElement('a');
+                            let href = '/questionBank/'+data.questionBankId
+                            a.setAttribute('href', href);
+
+                            a.innerText = data.questionBankName;
+                            nameCell.appendChild(a)
+                            qCell.innerText = qGCell.innerText = "0";
+
+                            let form = document.createElement('form');
+                            let action = '/discipline/'+data.discipline.disciplineId+'/delete-questionbank/'+data.questionBankId;
+                            form.setAttribute('action', action); // Replace with your form action URL
+                            form.setAttribute('method', 'post');
+                            form.classList.add("deleteForm")
+                            form.addEventListener('submit', function (event) {
+                                event.preventDefault();
+
+                                let formData = new FormData(form); // Получаем данные формы
+
+                                fetch(form.getAttribute('action'), {
+                                    method: 'POST',
+                                    body: formData
+                                })
+                                    .then(response => {
+                                        if (response.ok) {
+                                            console.log('Успешно добавлено');
+                                            let trElement = form.parentElement.parentElement; // Получаем родительский tr
+                                            trElement.remove();
+                                        } else {
+                                            console.error('Ошибка', response.statusText);
+
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Произошла ошибка при отправке запроса', error);
+                                    });
+                            });
+                            let btn = document.createElement('input');
+                            btn.setAttribute('type', 'submit');
+                            btn.setAttribute('value', 'Delete')
+                            form.appendChild(btn);
+                            delBtnCell.appendChild(form);
+
+                        })
+                        .catch(error => {
+                            console.error('Произошла ошибка при отправке запроса', error);
+                        });
+                });
+
+            })
+            ;
+        </script>
     </div>
     <div th:unless="${discipline}">
         <p>Discipline not found.</p>

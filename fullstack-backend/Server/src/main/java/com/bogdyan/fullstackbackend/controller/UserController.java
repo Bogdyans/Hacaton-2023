@@ -1,13 +1,10 @@
 package com.bogdyan.fullstackbackend.controller;
 
 
-import com.bogdyan.fullstackbackend.model.Role;
+
 import com.bogdyan.fullstackbackend.model.UGroup;
 import com.bogdyan.fullstackbackend.model.User;
-import com.bogdyan.fullstackbackend.repository.RoleRepository;
-import com.bogdyan.fullstackbackend.repository.UserRepository;
 import com.bogdyan.fullstackbackend.service.UGroupService;
-import com.bogdyan.fullstackbackend.service.RoleService;
 import com.bogdyan.fullstackbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Random;
 
 @Controller
 public class UserController {

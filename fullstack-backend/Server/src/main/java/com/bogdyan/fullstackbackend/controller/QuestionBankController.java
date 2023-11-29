@@ -1,5 +1,7 @@
 package com.bogdyan.fullstackbackend.controller;
 
+import com.bogdyan.fullstackbackend.model.QuestionBank;
+import com.bogdyan.fullstackbackend.service.DataTransferService;
 import com.bogdyan.fullstackbackend.service.QuestionBankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -57,4 +59,14 @@ public class QuestionBankController {
         model.addAttribute("questionbank", questionBankService.findById(qbid));
         return "questionBankInfo";
     }
+
+    @PostMapping("questionBank/{qbid}/export")
+    public String export(@PathVariable("qbid") int qbid, Model model){
+        QuestionBank questionBank = questionBankService.findById(qbid);
+        DataTransferService dts = new DataTransferService();
+        dts.SerializeDataBase(questionBank);
+        model.addAttribute("questionbank", questionBank);
+        return "questionBankInfo";
+    }
+
 }
